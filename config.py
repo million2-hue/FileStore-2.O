@@ -24,7 +24,8 @@ DB_NAME = "yato"
 
 FSUBS = [[-1003016571084, True, 10]] # Force Subscription Channels [channel_id, request_enabled, timer_in_minutes]
 # Database Channel (Primary)
-DB_CHANNEL = -1002759978408 # just put channel id dont add ""
+DB_CHANNEL = { "-1002759978408": {"name": "Primary DB", "is_primary": True, "is_active": True}, 
+             "-1002759978408": {"name": "Secondary DB", "is_primary": False, "is_active": True} # just put channel id dont add ""
 # Multiple Database Channels (can be set via bot settings)
 # DB_CHANNELS = {
 #     "-1002595092736": {"name": "Primary DB", "is_primary": True, "is_active": True},
