@@ -66,17 +66,6 @@ async def start_command(client: Client, message: Message):
     id = message.from_user.id
     is_premium = await is_premium_user(id)
 
-    # Add user if not already present
-    if not await db.present_user(user_id):
-        try:
-            await db.add_user(user_id)
-        except:
-            pass
-
-    # ✅ Check Force Subscription
-    if not await is_subscribed(client, user_id):
-        return await not_joined(client, message)
-
     # Check if user is banned
     banned_users = await db.get_ban_users()
     if user_id in banned_users:
@@ -88,8 +77,19 @@ async def start_command(client: Client, message: Message):
             )
         )
 
+    # ✅ Check Force Subscription
+    if not await is_subscribed(client, user_id):
+        return await not_joined(client, message)
+
     # File auto-delete time in seconds
     FILE_AUTO_DELETE = await db.get_del_timer()
+
+    # Add user if not already present
+    if not await db.present_user(user_id):
+        try:
+            await db.add_user(user_id)
+        except:
+            pass
 
     # Handle normal message flow
     text = message.text
@@ -202,7 +202,7 @@ async def start_command(client: Client, message: Message):
     else:
         reply_markup = InlineKeyboardMarkup(
             [
-                    [InlineKeyboardButton("• ᴍᴏʀᴇ ᴄʜᴀɴɴᴇʟs •", url="https://t.me/Nova_Flix/50")],
+                    [InlineKeyboardButton("• ᴍᴏʀᴇ ᴄʜᴀɴɴᴇʟs •", url="https://t.me/P_World_81")],
 
     [
                     InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data = "about"),
@@ -286,7 +286,7 @@ async def not_joined(client: Client, message: Message):
                 except Exception as e:
                     print(f"Error with chat {chat_id}: {e}")
                     return await temp.edit(
-                        f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @rohit_1888</i></b>\n"
+                        f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @I_am_nerev_die</i></b>\n"
                         f"<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>"
                     )
 
@@ -316,7 +316,7 @@ async def not_joined(client: Client, message: Message):
     except Exception as e:
         print(f"Final Error: {e}")
         await temp.edit(
-            f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @rohit_1888</i></b>\n"
+            f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @I_am_nerev_die</i></b>\n"
             f"<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>"
         )
 
@@ -473,3 +473,50 @@ async def total_verify_count_cmd(client, message: Message):
 async def bcmd(bot: Bot, message: Message):        
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton("• ᴄʟᴏsᴇ •", callback_data = "close")]])
     await message.reply(text=CMD_TXT, reply_markup = reply_markup, quote= True)
+
+# ==============================================================
+# ✅ FIX REPLY — Non-Admins Fix Reply 
+#    Admins aur Owner Only link generate
+# ==============================================================
+
+from pyrogram import filters
+from pyrogram.types import Message
+
+# === IDs define kar ===
+OWNER_ID = 7596496109  # apna Telegram ID
+ADMINS = [7881164052, 6861125900]  # admin IDs list
+
+def is_admin_or_owner(uid: int) -> bool:
+    """Owner ya Admin check kare."""
+    return uid == OWNER_ID or uid in ADMINS
+
+@Bot.on_message(
+    filters.private
+    & ~filters.command([
+        "start", "help", "about", "myplan",
+        "addpremium", "remove_premium",
+        "premium_users", "count", "commands"
+    ])
+    & filters.create(lambda _, __, m: not is_admin_or_owner(m.from_user.id)),
+    group=20  # group number kam rakho taaki ye baad me chale
+)
+async def fixed_reply_user_only(client, message: Message):
+    """Sirf normal users ke liye fixed reply."""
+    uid = message.from_user.id
+
+    # --- Agar banned user hai ---
+    try:
+        banned_users = await db.get_ban_users()
+        if uid in banned_users:
+            await message.reply_text("⛔️ You are banned. Contact support.")
+            return
+    except Exception:
+        pass
+
+    # --- Normal user ke liye reply ---
+    try:
+        await message.reply_text(
+            "<b><blockquote>♲︎︎︎ Pᴏᴡᴇʀᴇᴅ Bʏ : @P_world_81🔞</blockquote></b>"
+        )
+    except Exception as e:
+        print(f"Fixed reply error: {e}")
