@@ -40,14 +40,8 @@ async def daily_reset_task():
     except Exception:
         pass  
 
-scheduler.add_job(daily_reset_task, "cron", hour=0, minute=0)
+scheduler.add_job(daily_reset_task, "cron", hour=0, minute=0, max_instances=3)
 #scheduler.start()
-
-
-def get_indian_time():
-    """Returns the current time in IST."""
-    ist = pytz.timezone("Asia/Kolkata")
-    return datetime.now(ist)
 
 
 name ="""
@@ -77,7 +71,7 @@ class Bot(Client):
         await super().start()
         scheduler.start()
         usr_bot_me = await self.get_me()
-        self.uptime = get_indian_time()
+        self.uptime = datetime.now()
 
         try:
             db_channel = await self.get_chat(CHANNEL_ID)
@@ -87,11 +81,11 @@ class Bot(Client):
         except Exception as e:
             self.LOGGER(__name__).warning(e)
             self.LOGGER(__name__).warning(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
-            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/weebs_support for support")
+            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/P_World_81 for support")
             sys.exit()
 
         self.set_parse_mode(ParseMode.HTML)
-        self.LOGGER(__name__).info(f"Bot Running..!\n\nCreated by \nhttps://t.me/weebs_support")
+        self.LOGGER(__name__).info(f"Bot Running..!\n\nCreated by \nhttps://t.me/P_World_81")
         self.LOGGER(__name__).info(f"""       
 
 
@@ -105,7 +99,7 @@ class Bot(Client):
 
         self.set_parse_mode(ParseMode.HTML)
         self.username = usr_bot_me.username
-        self.LOGGER(__name__).info(f"Bot Running..! Made by @Codeflix_Bots")   
+        self.LOGGER(__name__).info(f"Bot Running..! Made by @P_world_81")   
 
         # Start Web Server
         app = web.AppRunner(await web_server())
@@ -113,7 +107,7 @@ class Bot(Client):
         await web.TCPSite(app, "0.0.0.0", PORT).start()
 
 
-        try: await self.send_message(OWNER_ID, text = f"<b><blockquote> Bᴏᴛ Rᴇsᴛᴀʀᴛᴇᴅ by @Codeflix_Bots</blockquote></b>")
+        try: await self.send_message(OWNER_ID, text = f"<b><blockquote> Bᴏᴛ Rᴇsᴛᴀʀᴛᴇᴅ by @p_world_81🔞</blockquote></b>")
         except: pass
 
     async def stop(self, *args):
@@ -124,7 +118,7 @@ class Bot(Client):
         """Run the bot."""
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.start())
-        self.LOGGER(__name__).info("Bot is now running. Thanks to @rohit_1888")
+        self.LOGGER(__name__).info("Bot is now running. Thanks to @I_am_nerev_die")
         try:
             loop.run_forever()
         except KeyboardInterrupt:
